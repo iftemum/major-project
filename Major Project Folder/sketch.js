@@ -16,12 +16,8 @@ function draw() {
 
 }
 
-class PlayerShip {
-  constructor(x, y){
-    this.x = x;
-    this.y = y;
-    this.dy = 
-  }
-  
-
+function preload(){
+  playerShip = loadImage()
 }
+
+function movePlayer();
