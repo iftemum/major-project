@@ -8,19 +8,26 @@
 
 - Enemy Spaceships
 
-- Bullets from enemies
-
 - Bullets from player
 
-- A Starting Screen
-
-- A Scoreboard
+- Enemies will have hit boxes and disappear when hit by a bullet
 
 - A Space background
 
+- Move horizontally with help of keys
+
 ## Nice to have list
+
+- A Starting Screen
+
+- enemies that will come in different waves
 
 - High Score menu
 
 - equippable upgrades in game
 
+- increasing difficulty
+
+- A Scoreboard
+
+- Sound
