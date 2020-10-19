@@ -6,13 +6,16 @@
 // - describe what you did to take this project "above and beyond"
 let planeX;
 let playerShip; 
+let spaceShip;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(800, windowHeight);
 }
 
 function draw() {
   background(220);
+  createEnemy();
+  spaceShip = new Player();
 
 }
 
@@ -39,7 +42,7 @@ class Player {
   }
 
   display() {
-    image(playerShip, this.x, 0 + 50, 150, 150)
+    image(playerShip, this.x, 0 + 50, 150, 150);
   }
   
 
@@ -47,10 +50,18 @@ class Player {
 
 }
 
-class Enemies {
-  constructor(x, y) {
+function createEnemy(){
+  for (let i = 0; i <= 5; i++){
+    for (let j = 0; j<=3 ; j++){
+      
+      square(i*50+50, j*50+50, 25);
 
-
+      
+      
+      
+    }
   }
 }
-  
+
+
+function 
