@@ -18,17 +18,19 @@ let player = {
   dx: 7,
 };
 
-let bullets = {
-  x : player.x,
-  y : player.y,
-  width : 7,
-  height : 15,
-  dy : 5,
-  state : 0,
-  fire : false,
+let bulletArray = [];
+
+// let bullets = {
+//   x : player.x,
+//   y : player.y,
+//   width : 7,
+//   height : 15,
+//   dy : 5,
+//   state : 0,
+//   fire : false,
 
   
-};
+// };
 
 function preload(){
   spaceBackground = loadImage("assets/space.jpg");
@@ -42,46 +44,24 @@ function setup() {
 }
 
 function draw() {
-  background("black");
+  background(spaceBackground);
   displayUI();
-  displayBullets();
   displayPlayer();
   playerMovement();
   raian.move();
   raian.display();
-  
+  for (let i = 0; i<bulletArray.length; i++){
+      
+    bulletArray[i].move();
+    bulletArray[i].display();
+  }  
 }
 
 
-function displayBullets() {
-  fill("yellow");
-  rect(bullets.x, bullets.y, bullets.width, bullets.height);
-
-  if (bullets.fire == true && bullets.state== 0){
-    bullets.state = 1;
+function keyPressed(){
+  if(key === " "){
+    bulletArray.push(new Bullet(player.x ,player.y));
   }
-
-  if (bullets.state == 1){
-    bullets.x = bullets.x;
-    bullets.y = bullets.y-bullets.speed;
-    if (bullets.y <= 0){
-      bullets.state = 2;
-    }
-
-  }
-  
-  if (bullets.position == 2){
-    bullets.y = player.y;
-    bullets.x = player.x;
-    bullets.state = 0;
-  }
-  else{
-    bullets.y = player.y;
-    bullets.x = player.x;
-  }
-
-
-
 }
 
 function displayUI() {
@@ -107,6 +87,23 @@ function displayPlayer(){
 
   
   
+}
+
+class Bullet {
+  constructor(x,y){
+    this.x = x;
+    this.y = y;
+    this.dy = -5;
+  }
+  move() {
+    this.y += this.dy;
+  }
+
+  display(){
+    fill("orange");
+    noStroke();
+    circle(this.x, this.y, 5);
+  }
 }
 
 class Enemy {
@@ -155,12 +152,3 @@ function playerMovement(){
   }
 }
 
-function keyTyped(){
-  if(key == "s" && keyIsPressed){
-    fire= true;
-  }
-  else{
-    fire = false;
-  }
-
-}
