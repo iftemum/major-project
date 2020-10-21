@@ -18,6 +18,18 @@ let player = {
   dx: 7,
 };
 
+let bullets = {
+  x : player.x,
+  y : player.y,
+  width : 7,
+  height : 15,
+  dy : 5,
+  state : 0,
+  fire : false,
+
+  
+};
+
 function preload(){
   spaceBackground = loadImage("assets/space.jpg");
   alien = loadImage("assets/alien.png");
@@ -32,6 +44,7 @@ function setup() {
 function draw() {
   background("black");
   displayUI();
+  displayBullets();
   displayPlayer();
   playerMovement();
   raian.move();
@@ -39,6 +52,37 @@ function draw() {
   
 }
 
+
+function displayBullets() {
+  fill("yellow");
+  rect(bullets.x, bullets.y, bullets.width, bullets.height);
+
+  if (bullets.fire == true && bullets.state== 0){
+    bullets.state = 1;
+  }
+
+  if (bullets.state == 1){
+    bullets.x = bullets.x;
+    bullets.y = bullets.y-bullets.speed;
+    if (bullets.y <= 0){
+      bullets.state = 2;
+    }
+
+  }
+  
+  if (bullets.position == 2){
+    bullets.y = player.y;
+    bullets.x = player.x;
+    bullets.state = 0;
+  }
+  else{
+    bullets.y = player.y;
+    bullets.x = player.x;
+  }
+
+
+
+}
 
 function displayUI() {
   fill(255,255,255);
@@ -49,7 +93,7 @@ function displayUI() {
   text("SCORE : " + score, 20, 45);
   textAlign("RIGHT");
   text("LIVES : " + lives , 600, 45);
-
+  
 }
 
 
@@ -59,9 +103,9 @@ function displayPlayer(){
   rectMode(CENTER);
   rect(player.x, player.y, player.width, 20);
   rect(player.x, player.y-15, 15, 30);
+  
 
-
-
+  
   
 }
 
@@ -111,3 +155,12 @@ function playerMovement(){
   }
 }
 
+function keyTyped(){
+  if(key == "s" && keyIsPressed){
+    fire= true;
+  }
+  else{
+    fire = false;
+  }
+
+}
