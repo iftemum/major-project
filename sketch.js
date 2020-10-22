@@ -10,7 +10,7 @@ let alienImage;
 let score = 0;
 let lives = 3;
 let stage = 1;
-
+let edge = false; 
 let player = {
   x: 400,
   y: 650,
@@ -31,7 +31,7 @@ function setup() {
   createCanvas(800, 800);
   for (let i = 0; i<12; i++){
     for(let j= 0; j<3; j++){
-      alienArray.push(new Enemy(i*50+50,j*60+50));
+      alienArray.push(new Enemy(i*50+50,j*60+80));
     }
   }
 
@@ -64,14 +64,21 @@ function game() {
   for(let i = 0; i<alienArray.length; i++){
     alienArray[i].display();
     alienArray[i].move();
-    
   }
+  if (edge === true){
+    for(let i = 0; i<alienArray.length; i++){
+      alienArray[i].shiftDown();
+
+  }
+}
+
   for (let i = 0; i<bulletArray.length; i++){
       
     bulletArray[i].move();
     bulletArray[i].display();
   }  
 }
+
 function openingScreen(){
   background("black");
   fill("green");
@@ -166,11 +173,16 @@ class Enemy {
     this.x += this.dx;
 
     if(this.x <=0 + this.radius || this.x >= width - this.radius){
-      this.dx *= -1;
-      this.y += 10;  
+      edge = true;
+
     }
 
 
+  }
+
+  shiftDown(){
+    this.dx *= -1;
+    this.y += 5;
   }
 
 
