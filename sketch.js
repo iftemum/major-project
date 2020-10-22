@@ -6,56 +6,93 @@
 // - describe what you did to take this project "above and beyond"
 
 let spaceBackground;
-let alien;
+let alienImage;
 let score = 0;
 let lives = 3;
-let raian;
+let stage = 1;
 
 let player = {
-  x: 200,
-  y: 520,
+  x: 400,
+  y: 650,
   width: 50,
   dx: 7,
 };
 
 let bulletArray = [];
 
-// let bullets = {
-//   x : player.x,
-//   y : player.y,
-//   width : 7,
-//   height : 15,
-//   dy : 5,
-//   state : 0,
-//   fire : false,
+let alienArray = [];
 
-  
-// };
 
 function preload(){
-  spaceBackground = loadImage("assets/space.jpg");
-  alien = loadImage("assets/alien.png");
+  alienImage = loadImage("assets/alien.png");
 }
 
 function setup() {
   createCanvas(800, 800);
-  raian = new Enemy(100, 100);
+  for (let i = 0; i<12; i++){
+    for(let j= 0; j<3; j++){
+      alienArray.push(new Enemy(i*50+50,j*60+50));
+    }
+  }
 
 }
 
-function draw() {
-  background(spaceBackground);
+
+function draw(){
+  
+  if(stage===0){
+    openingScreen();
+
+
+  }
+  
+  if(stage ===1){
+    game();
+
+  }
+  
+  if(mouseIsPressed===true){
+    stage = 1;
+  }
+}
+
+function game() {
+  background("black");
   displayUI();
   displayPlayer();
   playerMovement();
-  raian.move();
-  raian.display();
+  for(let i = 0; i<alienArray.length; i++){
+    alienArray[i].display();
+    alienArray[i].move();
+    
+  }
   for (let i = 0; i<bulletArray.length; i++){
       
     bulletArray[i].move();
     bulletArray[i].display();
   }  
 }
+function openingScreen(){
+  background("black");
+  fill("green");
+  textSize(70);
+  text("SPACE WARS", 200, 100);
+  textSize(15);
+  text("Programmed by Iftemum Al Raian 2020", 230, 130);
+
+  textSize(40);
+  text("How To Play", 200, 250);
+  textSize(15);
+  text(">PRESS LEFT AND RIGHT ARROWS TO MOVE", 230, 290);
+  text(">PRESS SPACE TO KILL THE ALIENS", 230, 320);
+  textSize(30);
+  text("CLICK THE SCREEN TO START",200,450);
+
+
+
+}
+
+
 
 
 function keyPressed(){
@@ -93,7 +130,7 @@ class Bullet {
   constructor(x,y){
     this.x = x;
     this.y = y;
-    this.dy = -5;
+    this.dy = -7;
   }
   move() {
     this.y += this.dy;
@@ -102,30 +139,37 @@ class Bullet {
   display(){
     fill("orange");
     noStroke();
-    circle(this.x, this.y, 5);
+    circle(this.x, this.y, 8);
   }
 }
+
 
 class Enemy {
   constructor(x, y){
     this.x = x;
-    this.y = y; 
-    
-  }
-
-  move(){
-    for(let i = 0; i<width; i++){
-      this.x += 3;
-    }
-    if (this.x>width-player.width){
-      this.y += 10;
+    this.y = y;
+    this.radius = 17;
+    this.fillColor = "red"
+    this.dx = 1;
     }
 
 
-  }
 
   display(){
-    image(alien, this.x, this.y, 50, 50);
+    fill(this.fillColor)
+    circle(this.x, this.y, this.radius*2);
+
+  }
+
+  move() {
+
+    this.x += this.dx;
+
+    if(this.x <=0 + this.radius || this.x >= width - this.radius){
+      this.dx *= -1;
+      this.y += 10;  
+    }
+
 
   }
 
@@ -151,4 +195,5 @@ function playerMovement(){
     player.x = width - player.width/2;
   }
 }
+
 
