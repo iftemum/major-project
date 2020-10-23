@@ -9,7 +9,7 @@ let spaceBackground;
 let alienImage;
 let score = 0;
 let lives = 3;
-let stage = 1;
+let stage = 0;
 let edge = false; 
 let player = {
   x: 400,
@@ -64,6 +64,7 @@ function game() {
   for(let i = 0; i<alienArray.length; i++){
     alienArray[i].display();
     alienArray[i].move();
+    
   }
   if (edge === true){
     for(let i = 0; i<alienArray.length; i++){
@@ -76,6 +77,7 @@ function game() {
       
     bulletArray[i].move();
     bulletArray[i].display();
+
   }  
 }
 
@@ -137,6 +139,7 @@ class Bullet {
   constructor(x,y){
     this.x = x;
     this.y = y;
+    this.diameter = 8;
     this.dy = -7;
   }
   move() {
@@ -146,8 +149,9 @@ class Bullet {
   display(){
     fill("orange");
     noStroke();
-    circle(this.x, this.y, 8);
+    circle(this.x, this.y, this.diameter);
   }
+
 }
 
 
@@ -159,6 +163,7 @@ class Enemy {
     this.fillColor = "red"
     this.dx = 1;
     }
+    
 
 
 
@@ -181,8 +186,8 @@ class Enemy {
   }
 
   shiftDown(){
-    this.dx *= -1;
     this.y += 5;
+    this.dx *= -1;
   }
 
 
