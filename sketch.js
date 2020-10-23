@@ -7,14 +7,16 @@
 
 let spaceBackground;
 let alienImage;
+let shipImage;
 let score = 0;
 let lives = 3;
 let stage = 0;
 let edge = false; 
+
 let player = {
   x: 400,
-  y: 650,
-  width: 50,
+  y: 505,
+  width: 70,
   dx: 7,
 };
 
@@ -25,13 +27,15 @@ let alienArray = [];
 
 function preload(){
   alienImage = loadImage("assets/alien.png");
+  shipImage = loadImage("assets/ship.png");
 }
 
 function setup() {
-  createCanvas(800, 800);
-  for (let i = 0; i<12; i++){
+  imageMode(CENTER);
+  createCanvas(windowWidth, windowHeight);
+  for (let i = 0; i<15; i++){
     for(let j= 0; j<3; j++){
-      alienArray.push(new Enemy(i*50+50,j*60+80));
+      alienArray.push(new Enemy(i*50+50,j*50+60));
     }
   }
 
@@ -42,7 +46,6 @@ function draw(){
   
   if(stage===0){
     openingScreen();
-
 
   }
   
@@ -64,14 +67,11 @@ function game() {
   for(let i = 0; i<alienArray.length; i++){
     alienArray[i].display();
     alienArray[i].move();
-    
-  }
-  if (edge === true){
-    for(let i = 0; i<alienArray.length; i++){
+    if (alienArray[i].edge) {
       alienArray[i].shiftDown();
-
+      alienArray[i].move();
+    }    
   }
-}
 
   for (let i = 0; i<bulletArray.length; i++){
       
@@ -116,9 +116,7 @@ function displayUI() {
   strokeWeight(4);
   textSize(30);
   textAlign("LEFT");
-  text("SCORE : " + score, 20, 45);
-  textAlign("RIGHT");
-  text("LIVES : " + lives , 600, 45);
+  text("SCORE : " + score, 20, 30);
   
 }
 
@@ -126,13 +124,7 @@ function displayUI() {
 function displayPlayer(){
   fill("green");
   noStroke();
-  rectMode(CENTER);
-  rect(player.x, player.y, player.width, 20);
-  rect(player.x, player.y-15, 15, 30);
-  
-
-  
-  
+  image(shipImage, player.x, player.y, player.width, player.width);
 }
 
 class Bullet {
@@ -159,17 +151,18 @@ class Enemy {
   constructor(x, y){
     this.x = x;
     this.y = y;
-    this.radius = 17;
-    this.fillColor = "red"
+    this.size = 30;
+    this.fillColor = "red";
     this.dx = 1;
-    }
+    this.edge = false;
+  }
     
 
 
 
   display(){
-    fill(this.fillColor)
-    circle(this.x, this.y, this.radius*2);
+    fill(this.fillColor);
+    image(alienImage, this.x, this.y, this.size, this.size);
 
   }
 
@@ -177,17 +170,19 @@ class Enemy {
 
     this.x += this.dx;
 
-    if(this.x <=0 + this.radius || this.x >= width - this.radius){
-      edge = true;
-
+    if(this.x <=0 + this.size/2 || this.x >= width - this.size/2){
+      this.edge = true;
+    }
+    else {
+      this.edge = false;
     }
 
 
   }
 
   shiftDown(){
-    this.y += 5;
-    this.dx *= -1;
+    this.y += 25;
+    this.dx *= -1.12;
   }
 
 
