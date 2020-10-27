@@ -6,6 +6,7 @@
 let spaceBackground;
 let alienImage;
 let shipImage;
+let victory;
 let laser;
 let score = 0;
 let lives = 3;
@@ -33,6 +34,7 @@ function preload(){
   spaceBackground = loadImage("assets/space (2).jpg");
   alienImage = loadImage("assets/alien.png");
   shipImage = loadImage("assets/ship.png");
+  victory = loadImage("assets/victory.jpg");
 }
 
 function setup() {
@@ -43,7 +45,7 @@ function setup() {
   // a grid of total 90 aliens are pushed into the alienArray 
 
   for (let i = 0; i<15; i++){
-    for(let j= 0; j<6; j++){
+    for(let j= 0; j<5; j++){
       alienArray.push(new Enemy(i*50+50,j*50+60));
     }
   }
@@ -67,7 +69,7 @@ function draw(){
     stage = 1;
   }
 
-  if(score === 0){
+  if(score === 75){
     winningScreen();
 
 
@@ -106,7 +108,7 @@ function bullets(){
   for (let i = bulletArray.length-1; i>=0; i--){
     if(bulletArray[i].toDelete){
       bulletArray.splice(i, 1);
-      score++
+      score++;
     }
   }
   
@@ -173,11 +175,11 @@ function displayUI() {
 function winningScreen(){
   background("green");
   fill("black");
-  stroke(50,150,50);
-  strokeWeight(10);
-  textSize(40);
-  textAlign(CENTER);
-  text("VICTORY!");
+  textSize(70);
+  text("Victory", 400, 300);
+  textSize(30);
+  text("Refresh to start again", 400, 400);
+
 
 }
 
@@ -271,11 +273,13 @@ class Enemy {
 
 }
 
+
+
 // this checks for collision between the aliens and the player
 function checkCollision(){
   let d = dist(player.x, player.y, Enemy.x, Enemy.y);
   for (let i = 0; i<alienArray.length;i++){
-    if (d<player.width/2+alienArray[i].size/2){
+    if (d<player.width/2+alienArray[i].size/){
       stage =2;
     }
 
@@ -303,6 +307,15 @@ function playerMovement(){
   else if (player.x + player.width/2 > width){
     player.x = width - player.width/2;
   }
+}
+
+function losingScreen(){
+  background("red");
+  fill("black");
+  textSize(70);
+  text("You Died", 400, 300);
+  textSize(30);
+  text("Refresh to start again", 400, 400);
 }
 
 
