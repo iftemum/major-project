@@ -6,6 +6,7 @@
 let spaceBackground;
 let alienImage;
 let shipImage;
+let laser;
 let score = 0;
 let lives = 3;
 let stage = 0;
@@ -27,12 +28,15 @@ let alienArray = [];
 
 // loading multimedia
 function preload(){
-  spaceBackground = loadImage("assets/space (2).jpg")
+  // soundFormats("mp3");
+  // laser = loadSound("assets/laser");
+  spaceBackground = loadImage("assets/space (2).jpg");
   alienImage = loadImage("assets/alien.png");
   shipImage = loadImage("assets/ship.png");
 }
 
 function setup() {
+  
   imageMode(CENTER);
   createCanvas(windowWidth, windowHeight);
 
@@ -63,7 +67,7 @@ function draw(){
     stage = 1;
   }
 
-  if(score === 90){
+  if(score === 0){
     winningScreen();
 
 
@@ -72,7 +76,7 @@ function draw(){
 
 // This is the main game function 
 function game() {
-  background();
+  background("black");
   displayUI();
   displayPlayer();
   playerMovement();
@@ -82,6 +86,7 @@ function game() {
 
 }
 
+// this function  displays, moves and removes the bullets when it collides with the aliens
 function bullets(){
   for (let i = 0; i<bulletArray.length; i++){
       
@@ -90,14 +95,14 @@ function bullets(){
     for(let j = 0; j<alienArray.length; j++){
       if (bulletArray[i].hits(alienArray[j])){
         bulletArray[i].delete();
-        alienArray[j].die();
+        alienArray[j].die();// when the bullet collides with an alien, its x value is set to 100000
       }
     }
 
 
   }
 
-  
+  // if bullets collide with an alien it dissapears and score increases
   for (let i = bulletArray.length-1; i>=0; i--){
     if(bulletArray[i].toDelete){
       bulletArray.splice(i, 1);
@@ -108,11 +113,14 @@ function bullets(){
 
 }
 
+
 function aliens(){
+  //aliens are displayed and moves by itself
   for(let i = 0; i<alienArray.length; i++){
     alienArray[i].display();
     alienArray[i].move();
 
+    // when an alien hits and edge it shifts down and it moves in the opposite direction
     if (alienArray[i].edge) {
       alienArray[i].shiftDown();
       alienArray[i].move();
@@ -121,6 +129,7 @@ function aliens(){
 
 }
 
+// displays the opening screen and all the necessary information to play
 function openingScreen(){
   background("black");
   fill("green");
@@ -141,13 +150,15 @@ function openingScreen(){
 
 }
 
-
+// when the space button is pressed a new bullet is pushed into the bullet array
 function keyPressed(){
   if(key === " "){
     bulletArray.push(new Bullet(player.x ,player.y));
+    // laser.play();
   }
 }
 
+// this displays the user interface 
 function displayUI() {
   fill(255,255,255);
   stroke(50,150,50);
@@ -158,12 +169,19 @@ function displayUI() {
   
 }
 
+// when the score reaches 90 this function will be displayed
 function winningScreen(){
   background("green");
-  fill("")
+  fill("black");
+  stroke(50,150,50);
+  strokeWeight(10);
+  textSize(40);
+  textAlign(CENTER);
+  text("VICTORY!");
+
 }
 
-
+// the image of the player is displayed
 function displayPlayer(){
   fill("green");
   noStroke();
@@ -182,10 +200,11 @@ class Bullet {
     this.toDelete = false;
 
   }
+  // moves vertically when space is pressed
   move() {
     this.y += this.dy;
   }
-
+// creates the bullet
   display(){
     fill("orange");
     noStroke();
@@ -196,6 +215,7 @@ class Bullet {
     this.toDelete = true; 
   }
 
+  // checks if the bullets have collided with the aliens
   hits(enemies){
     let d = dist(this.x, this.y, enemies.x, enemies.y);
     if (d< this.diameter/2 + enemies.size/2 ){
@@ -209,25 +229,23 @@ class Bullet {
 
 }
 
-
+// 
 class Enemy {
   constructor(x, y){
     this.x = x;
     this.y = y;
     this.size = 30;
-    this.fillColor = "red";
     this.dx = 4;
     this.edge = false;
 
   }
 
-
+// displays the image of the aliens
   display(){
-    fill(this.fillColor);
     image(alienImage, this.x, this.y, this.size, this.size);
 
   }
-
+// moves the aliens horizontally then shifts downward when it touches the edges
   move() {
 
     this.x += this.dx;
@@ -241,7 +259,7 @@ class Enemy {
 
 
   }
-
+// moves the alien's x position to 100000 when it hits a bullet
   die(){
     this.x = 100000;
   }
@@ -253,6 +271,7 @@ class Enemy {
 
 }
 
+// this checks for collision between the aliens and the player
 function checkCollision(){
   let d = dist(player.x, player.y, Enemy.x, Enemy.y);
   for (let i = 0; i<alienArray.length;i++){
@@ -267,7 +286,7 @@ function checkCollision(){
 }
 
 
-
+// this makes the player move using the arrow keys 
 function playerMovement(){
   if (keyIsDown(LEFT_ARROW)){
     player.x  -= player.dx;
