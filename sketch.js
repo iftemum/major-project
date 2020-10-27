@@ -1,18 +1,16 @@
-// Project Title
-// Your Name
-// Date
-//
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// Major Project - Space Wars
+// Iftemum Al Raian - Computer Science 30
+// 10/27/2020
 
+// Declaring all the global variables as needed
 let spaceBackground;
 let alienImage;
 let shipImage;
 let score = 0;
 let lives = 3;
 let stage = 0;
-let edge = false; 
 
+// making a player object so that it's properties can be used multiple times
 let player = {
   x: 400,
   y: 505,
@@ -20,12 +18,16 @@ let player = {
   dx: 7,
 };
 
+// bullet array to store every bullet that is shot
 let bulletArray = [];
 
+// alien array to store the aliens
 let alienArray = [];
 
 
+// loading multimedia
 function preload(){
+  spaceBackground = loadImage("assets/space (2).jpg")
   alienImage = loadImage("assets/alien.png");
   shipImage = loadImage("assets/ship.png");
 }
@@ -33,15 +35,18 @@ function preload(){
 function setup() {
   imageMode(CENTER);
   createCanvas(windowWidth, windowHeight);
+
+  // a grid of total 90 aliens are pushed into the alienArray 
+
   for (let i = 0; i<15; i++){
-    for(let j= 0; j<3; j++){
+    for(let j= 0; j<6; j++){
       alienArray.push(new Enemy(i*50+50,j*50+60));
     }
   }
 
 }
 
-
+// Different screens appear as needed
 function draw(){
   
   if(stage===0){
@@ -57,28 +62,63 @@ function draw(){
   if(mouseIsPressed===true){
     stage = 1;
   }
+
+  if(score === 90){
+    winningScreen();
+
+
+  }
 }
 
+// This is the main game function 
 function game() {
-  background("black");
+  background();
   displayUI();
   displayPlayer();
   playerMovement();
-  for(let i = 0; i<alienArray.length; i++){
-    alienArray[i].display();
-    alienArray[i].move();
-    if (alienArray[i].edge) {
-      alienArray[i].shiftDown();
-      alienArray[i].move();
-    }    
-  }
+  aliens();
+  bullets();
+  checkCollision();
 
+}
+
+function bullets(){
   for (let i = 0; i<bulletArray.length; i++){
       
     bulletArray[i].move();
     bulletArray[i].display();
+    for(let j = 0; j<alienArray.length; j++){
+      if (bulletArray[i].hits(alienArray[j])){
+        bulletArray[i].delete();
+        alienArray[j].die();
+      }
+    }
 
-  }  
+
+  }
+
+  
+  for (let i = bulletArray.length-1; i>=0; i--){
+    if(bulletArray[i].toDelete){
+      bulletArray.splice(i, 1);
+      score++
+    }
+  }
+  
+
+}
+
+function aliens(){
+  for(let i = 0; i<alienArray.length; i++){
+    alienArray[i].display();
+    alienArray[i].move();
+
+    if (alienArray[i].edge) {
+      alienArray[i].shiftDown();
+      alienArray[i].move();
+    }   
+  }
+
 }
 
 function openingScreen(){
@@ -102,8 +142,6 @@ function openingScreen(){
 }
 
 
-
-
 function keyPressed(){
   if(key === " "){
     bulletArray.push(new Bullet(player.x ,player.y));
@@ -120,6 +158,11 @@ function displayUI() {
   
 }
 
+function winningScreen(){
+  background("green");
+  fill("")
+}
+
 
 function displayPlayer(){
   fill("green");
@@ -127,12 +170,17 @@ function displayPlayer(){
   image(shipImage, player.x, player.y, player.width, player.width);
 }
 
+
+
+
 class Bullet {
   constructor(x,y){
     this.x = x;
     this.y = y;
     this.diameter = 8;
     this.dy = -7;
+    this.toDelete = false;
+
   }
   move() {
     this.y += this.dy;
@@ -144,6 +192,21 @@ class Bullet {
     circle(this.x, this.y, this.diameter);
   }
 
+  delete(){
+    this.toDelete = true; 
+  }
+
+  hits(enemies){
+    let d = dist(this.x, this.y, enemies.x, enemies.y);
+    if (d< this.diameter/2 + enemies.size/2 ){
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  }
+
 }
 
 
@@ -153,11 +216,10 @@ class Enemy {
     this.y = y;
     this.size = 30;
     this.fillColor = "red";
-    this.dx = 1;
+    this.dx = 4;
     this.edge = false;
-  }
-    
 
+  }
 
 
   display(){
@@ -180,12 +242,28 @@ class Enemy {
 
   }
 
+  die(){
+    this.x = 100000;
+  }
+
   shiftDown(){
     this.y += 25;
     this.dx *= -1.12;
   }
 
+}
 
+function checkCollision(){
+  let d = dist(player.x, player.y, Enemy.x, Enemy.y);
+  for (let i = 0; i<alienArray.length;i++){
+    if (d<player.width/2+alienArray[i].size/2){
+      stage =2;
+    }
+
+  }
+
+
+  
 }
 
 
@@ -207,5 +285,15 @@ function playerMovement(){
     player.x = width - player.width/2;
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
